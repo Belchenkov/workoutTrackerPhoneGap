@@ -12,15 +12,16 @@
     <meta name="msapplication-tap-highlight" content="no">
 
     <!-- Your app title -->
-    <title>My App</title>
+    <title>Workout Tracker | Home</title>
 
-    <link rel="stylesheet" href="lib/framework7/css/framework7.ios.min.css">
+    <link rel="stylesheet" href="lib/framework7/css/framework7.material.min.css">
+    <link rel="stylesheet" href="lib/framework7/css/framework7.material.colors.min.css">
     <link rel="stylesheet" href="lib/framework7/css/framework7.ios.colors.min.css">
-
+    <link rel="stylesheet" href="lib/framework7/css/framework7-icons.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 
-<body>
+<body class="theme-indigo">
     <!-- Status bar overlay for full screen mode (PhoneGap) -->
     <div class="statusbar-overlay"></div>
 
@@ -41,10 +42,8 @@
             <div class="navbar">
                 <div class="navbar-inner">
                     <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
-                    <div class="center sliding">Awesome App</div>
-                    <div class="right">
+                    <div class="center sliding">Workout Tracker</div>
 
-                    </div>
                 </div>
             </div>
             <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
@@ -54,7 +53,7 @@
                     <!-- Scrollable page content -->
                     <div class="page-content">
                         <div class="content-block">
-                             <p><a href="add.html" class="button">Add Workout</a></p>
+                             <p><a href="add.html" class="button button-big button-fill">Add Workout</a></p>
                             <br>
                             <div class="content-block-title">Recent Workouts</div>
                             <div class="list-block">

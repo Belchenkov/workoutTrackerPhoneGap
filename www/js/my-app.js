@@ -3,7 +3,7 @@ var myApp = new Framework7();
 var db;
 
 // If we need to use custom DOM library, let's save it to $$ variable:
-let $$ = Dom7;
+var $$ = Dom7;
 
 // Add view
 var mainView = myApp.addView('.view-main', {
@@ -11,6 +11,12 @@ var mainView = myApp.addView('.view-main', {
     dynamicNavbar: true
 });
 
+// Delete Event
+$$(document).on('deleted', '.remove-callback', function(){
+    var workoutId = $$(this).attr('id');
+
+    deleteWorkout(workoutId);
+});
 
 // Handle Cordova Device Ready Event
 $$(document).on('deviceready', function() {
@@ -20,7 +26,7 @@ $$(document).on('deviceready', function() {
     getWorkouts();
 });
 
-
+// Add Page
 myApp.onPageInit('add', function (page) {
     $$('#workout-form').on('submit', function(e){
         var data = {
@@ -29,11 +35,18 @@ myApp.onPageInit('add', function (page) {
             date: $$('#date').val(),
             type: $$('#type').val(),
             length: $$('#length').val(),
-        };
+        }
 
         addWorkout(data);
     });
-});
+})
+
+// Details Page
+myApp.onPageInit('details', function (page) {
+    var workoutId = page.query.id;
+
+    getWorkoutDetails(workoutId);
+})
 
 function createDatabase(){
     db.transaction(createTable,
@@ -75,7 +88,7 @@ function getWorkouts(){
             function(tx, results){
                 var len = results.rows.length;
                 console.log('workouts table: '+len+' rows found');
-                for(let i = 0; i < len; i++){
+                for(var i = 0;i < len;i++){
                     $$('#workout-list').append(`
           <li class="swipeout remove-callback" id="${results.rows.item(i).id}">
             <a href="details.html?id=${results.rows.item(i).id}" class="item-link swipeout-content item-content">
@@ -95,23 +108,41 @@ function getWorkouts(){
                 console.log(err);
             });
     });
+}
 
-    // Delete Event
-    $$(document.on('deleted', '.remove-callback', function () {
-        var workoutId = $$(this).attr('id');
-
-        deleteWorkout(workoutId);
-    }));
-
-    function deleteWorkout () {
-        db.transaction(function (tx) {
-            tx.executeSql('DELETE FROM workouts WHERE id="'+id+'"');
-        }, 
-        function (err) {
+function deleteWorkout(id){
+    db.transaction(function(tx){
+            tx.executeSql('DELETE FROM workouts WHERE id ="'+id+'"');
+        },
+        function(err){
             console.log(err);
         },
-        function () {
+        function(){
             console.log('Workout Deleted');
         });
-    }
+}
+
+function getWorkoutDetails(id){
+    db.transaction(function(tx){
+        tx.executeSql('SELECT * FROM workouts WHERE id = "'+id+'"', [],
+            function(tx, result){
+                $$('#workout-details').html(`
+        <div class="card">
+          <div class="card-header">${result.rows[0].title}</div>
+          <div class="card-content">
+            <div class="card-content-inner">
+            <ul>
+              <li>Workout Type: ${result.rows[0].type}</li>
+              <li>Workout Length: ${result.rows[0].length}</li>
+            </ul>
+            </div>
+          </div>
+          <div class="card-footer">Date: ${result.rows[0].date}</div>
+        </div>
+      `);
+            },
+            function(err){
+                console.log(err);
+            });
+    });
 }
